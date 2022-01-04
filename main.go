@@ -58,6 +58,7 @@ func main() {
 		if blkInfo.NewChainConfig != nil {
 			prevBlockInfo, err := vconfig.VbftBlock(prevBlock.Header)
 			if err != nil {
+				log.Errorf("VbftBlock height:%d,err:%s",prevBlock.Header.Height,err)
 				panic(err)
 			}
 			if prevBlockInfo.NewChainConfig != nil {
