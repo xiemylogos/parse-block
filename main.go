@@ -13,7 +13,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&ServerConfig, "cfg", "./config.json", "Config of sigserver")
+	flag.StringVar(&ServerConfig, "cfg", "./config.json", "Config of parse block server")
 }
 
 func main() {
@@ -23,10 +23,10 @@ func main() {
 	}
 	ontSdk := ontology_go_sdk.NewOntologySdk()
 	ontSdk.NewRpcClient().SetAddress(cfg.RpcAddr)
-	height := cfg.BlockHeight
-	for i := height; i < height; i-- {
-		if i == 0 {
-			log.Info("current height:%d",i)
+	curentHeight := cfg.BlockHeight
+	for height := curentHeight; height >0; height-- {
+		if height == 0 {
+			log.Info("current height:%d",height)
 			return
 		}
 		block, err := ontSdk.GetBlockByHeight(height)
@@ -47,7 +47,7 @@ func main() {
 			log.Errorf("VbftBlock panic height:%d", block.Header.Height)
 			panic(err)
 		}
-		log.Info("usedPubKey:%d,height:%d", len(usedPubKey), block.Header.Height)
+		log.Infof("usedPubKey:%d,height:%d", len(usedPubKey), block.Header.Height)
 
 		var chainConfigHeight uint32
 		prevBlock, err := ontSdk.GetBlockByHeight(height - 1)
@@ -92,5 +92,6 @@ func main() {
 				height, len(usedPubKey), c)
 			panic(nil)
 		}
+		log.Infof("parse block succ height:%d",height)
 	}
 }
