@@ -88,7 +88,7 @@ func main() {
 			panic(nil)
 		}
 		c := chanConfigBlkInfo.NewChainConfig.C
-		if uint32(len(usedPubKey)) < c+1 && height != 183 {
+		if uint32(len(usedPubKey)) < c+1 && height != 183 && height != 23610 {
 			log.Errorf("verify header error:  height:%d,pubkey len:%d,c:%d",
 				height, len(usedPubKey), c)
 			panic(nil)
