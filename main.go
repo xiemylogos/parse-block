@@ -24,9 +24,9 @@ func main() {
 	ontSdk := ontology_go_sdk.NewOntologySdk()
 	ontSdk.NewRpcClient().SetAddress(cfg.RpcAddr)
 	curentHeight := cfg.BlockHeight
-	for height := curentHeight; height >0; height-- {
+	for height := curentHeight; height > 0; height-- {
 		if height == 0 {
-			log.Info("current height:%d",height)
+			log.Info("current height:%d", height)
 			return
 		}
 		block, err := ontSdk.GetBlockByHeight(height)
@@ -58,7 +58,7 @@ func main() {
 		if blkInfo.NewChainConfig != nil {
 			prevBlockInfo, err := vconfig.VbftBlock(prevBlock.Header)
 			if err != nil {
-				log.Errorf("VbftBlock height:%d,err:%s",prevBlock.Header.Height,err)
+				log.Errorf("VbftBlock height:%d,err:%s", prevBlock.Header.Height, err)
 				panic(err)
 			}
 			if prevBlockInfo.NewChainConfig != nil {
@@ -88,11 +88,12 @@ func main() {
 			panic(nil)
 		}
 		c := chanConfigBlkInfo.NewChainConfig.C
-		if uint32(len(usedPubKey)) < c+1 && height != 183 && height != 23610 {
+		if uint32(len(usedPubKey)) < c+1 {  //test net
+			//if uint32(len(usedPubKey)) < c+1 && height != 183 && height != 23610 {  //mainnet
 			log.Errorf("verify header error:  height:%d,pubkey len:%d,c:%d",
 				height, len(usedPubKey), c)
 			panic(nil)
 		}
-		log.Infof("parse block succ height:%d",height)
+		log.Infof("parse block succ height:%d", height)
 	}
 }
