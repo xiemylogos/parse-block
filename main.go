@@ -24,6 +24,10 @@ func main() {
 	ontSdk := ontology_go_sdk.NewOntologySdk()
 	ontSdk.NewRpcClient().SetAddress(cfg.RpcAddr)
 	curentHeight := cfg.BlockHeight
+	panicHeight := make(map[uint32]bool,0)
+	for _, h := range cfg.PanicHeight {
+		panicHeight[h] = true
+	}
 	for height := curentHeight; height > 0; height-- {
 		if height == 0 {
 			log.Info("current height:%d", height)
@@ -88,7 +92,7 @@ func main() {
 			panic(nil)
 		}
 		c := chanConfigBlkInfo.NewChainConfig.C
-		if uint32(len(usedPubKey)) < c+1 && height != 3155131 && height != 3155126 {  //test net
+		if uint32(len(usedPubKey)) < c+1 &&  !panicHeight[height]{  //test net
 			//if uint32(len(usedPubKey)) < c+1 && height != 183 && height != 23610 {  //mainnet
 			log.Errorf("verify header error:  height:%d,pubkey len:%d,c:%d",
 				height, len(usedPubKey), c)
