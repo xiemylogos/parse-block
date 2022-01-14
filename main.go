@@ -87,7 +87,7 @@ func main() {
 			panic(nil)
 		}
 		N := len(chanConfigBlkInfo.NewChainConfig.Peers)
-		C := N-(N-1)/3
+		C := N - (N-1)/3
 		if len(usedPubKey) < C {
 			log.Errorf("verify header error: height:%d,pubkey len:%d,c:%d",
 				height, len(usedPubKey), C)
