@@ -11,7 +11,6 @@ import (
 type Config struct {
 	RpcAddr     string
 	BlockHeight uint32
-	PanicHeight []uint32
 }
 
 func NewSvrConfig(configFilePath string) (*Config, error) {
