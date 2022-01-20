@@ -5,7 +5,7 @@ import (
 	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology/common/log"
 	vconfig "github.com/ontio/ontology/consensus/vbft/config"
-	scom "github.com/ontio/ontology/core/store/common"
+	"github.com/ontio/ontology/core/types"
 )
 
 var (
@@ -24,6 +24,10 @@ func main() {
 	ontSdk := ontology_go_sdk.NewOntologySdk()
 	ontSdk.NewRpcClient().SetAddress(cfg.RpcAddr)
 	curentHeight := cfg.BlockHeight
+	nodeIds := make(map[string]bool,0)
+	for _,id := range cfg.NodeId {
+		nodeIds[id] = true
+	}
 	for height := curentHeight; height > 0; height-- {
 		if height == 0 {
 			log.Info("current height:%d", height)
@@ -34,58 +38,13 @@ func main() {
 			log.Errorf("GetBlockByHeight panic height:%d", height)
 			panic(err)
 		}
-		usedPubKey := make(map[string]bool)
 		for _, bookkeeper := range block.Header.Bookkeepers {
 			pubkey := vconfig.PubkeyID(bookkeeper)
-			if usedPubKey[pubkey] {
-				log.Errorf("duplicate pubkey:%s,height:%d", pubkey, block.Header.Height)
+			address := types.AddressFromPubKey(pubkey)
+			if nodeIds[address.ToBase58()] {
+				log.Info("block height:%d",block.Header.Height)
+				panic(nil)
 			}
-			usedPubKey[pubkey] = true
 		}
-		blkInfo, err := vconfig.VbftBlock(block.Header)
-		if err != nil {
-			log.Errorf("VbftBlock panic height:%d", block.Header.Height)
-			panic(err)
-		}
-		log.Infof("usedPubKey:%d,height:%d", len(usedPubKey), block.Header.Height)
-		var chainConfigHeight uint32
-		prevBlock, err := ontSdk.GetBlockByHeight(height - 1)
-		if err != nil {
-			log.Errorf("GetBlockByHeight prevHeader panic height:%d", height-1)
-			panic(err)
-		}
-		if blkInfo.NewChainConfig != nil {
-			prevBlockInfo, err := vconfig.VbftBlock(prevBlock.Header)
-			if err != nil {
-				log.Errorf("VbftBlock height:%d,err:%s", prevBlock.Header.Height, err)
-				panic(err)
-			}
-			if prevBlockInfo.NewChainConfig != nil {
-				chainConfigHeight = prevBlock.Header.Height
-			} else {
-				chainConfigHeight = prevBlockInfo.LastConfigBlockNum
-			}
-		} else {
-			chainConfigHeight = blkInfo.LastConfigBlockNum
-		}
-		chainConfigBlock, err := ontSdk.GetBlockByHeight(chainConfigHeight)
-		if err != nil && err != scom.ErrNotFound {
-			log.Errorf("NewChainConfig is nil height:%d,err:%s", chainConfigHeight, err)
-			panic(err)
-		}
-		if chainConfigBlock == nil {
-			log.Errorf("NewChainConfig is nil height:%d", chainConfigHeight)
-			panic(nil)
-		}
-		chanConfigBlkInfo, err := vconfig.VbftBlock(chainConfigBlock.Header)
-		if err != nil {
-			log.Errorf("NewChainConfig is nil height:%d", chainConfigHeight)
-			panic(err)
-		}
-		if chanConfigBlkInfo.NewChainConfig == nil {
-			log.Errorf("NewChainConfig is nil height:%d", chainConfigHeight)
-			panic(nil)
-		}
-		log.Infof("parse block C:%d,height:%d",chanConfigBlkInfo.NewChainConfig.C,height)
 	}
 }

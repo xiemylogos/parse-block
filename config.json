@@ -1,4 +1,8 @@
 {
     "RpcAddr": "http://dappnode3.ont.io:20336",
-    "BlockHeight":13593213
+    "BlockHeight":500,
+    "NodeId":["AKMxTuHQtt5YspXNPwkQNP5ZY66c4LY5BR","AM9jHMV7xY4HWH2dWmzyxrtnbi6ErNt7oL",
+        "AZavFr7sQ4em2NmqWDjLMY34tHMQzATWgx","AKMxTuHQtt5YspXNPwkQNP5ZY66c4LY5BR",
+        "ATECwFPNRZFydFR1yUjb6RTLfVcKGKWRmp","AVRD9QmkYNq8n8DXc9AqpZnUEYhjg1aq5L",
+        "ANLRokqieUtrUMave66FcNy2cxV7Whf4UN"]
 }
