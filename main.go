@@ -4,7 +4,6 @@ import (
 	"flag"
 	ontology_go_sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology/common/log"
-	vconfig "github.com/ontio/ontology/consensus/vbft/config"
 	"github.com/ontio/ontology/core/types"
 )
 
@@ -39,8 +38,7 @@ func main() {
 			panic(err)
 		}
 		for _, bookkeeper := range block.Header.Bookkeepers {
-			pubkey := vconfig.PubkeyID(bookkeeper)
-			address := types.AddressFromPubKey(pubkey)
+			address := types.AddressFromPubKey(bookkeeper)
 			if nodeIds[address.ToBase58()] {
 				log.Info("block height:%d",block.Header.Height)
 				panic(nil)
