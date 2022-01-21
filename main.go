@@ -28,11 +28,8 @@ func main() {
 	for _, h := range cfg.PanicHeight {
 		panicHeight[h] = true
 	}
-	for height := curentHeight; height > 0; height-- {
-		if height == 0 {
-			log.Info("current height:%d", height)
-			return
-		}
+	var height uint32
+	for height = 1; height < curentHeight; height++ {
 		block, err := ontSdk.GetBlockByHeight(height)
 		if err != nil {
 			log.Errorf("GetBlockByHeight panic height:%d", height)
@@ -92,11 +89,9 @@ func main() {
 			panic(nil)
 		}
 		c := chanConfigBlkInfo.NewChainConfig.C
-		if uint32(len(usedPubKey)) < c+1 &&  !panicHeight[height]{  //test net
-			//if uint32(len(usedPubKey)) < c+1 && height != 183 && height != 23610 {  //mainnet
-			log.Errorf("verify header error:  height:%d,pubkey len:%d,c:%d",
+		if uint32(len(usedPubKey)) < c+1 {  //test net
+			log.Errorf("checkheader-c error:  height:%d,pubkey len:%d,c:%d",
 				height, len(usedPubKey), c)
-			panic(nil)
 		}
 		log.Infof("parse block succ height:%d", height)
 	}
